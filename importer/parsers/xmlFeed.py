@@ -43,3 +43,26 @@ class XmlFeedParser(BaseParser):
             }
             events.append(event)
         return events
+
+    def get_places(self):
+        places = []
+        for row in self.raw_data['places']:
+            children = {child.tag: child.text for child in row}
+            place = {
+                'external_id': get_value('id', 'int', row.attrib),
+                'title': get_value('title', 'str', children),
+                'text': get_value('text', 'str', children),
+                'address': get_value('address', 'str', children),
+                'url': get_value('url', 'str', children),
+                'latitude': get_attr('latitude', 'float', row.find('coordinates')),
+                'longitude': get_attr('longitude', 'float', row.find('coordinates')),
+                'type': get_value('type', 'str', row.attrib),
+                'city': get_value('city', 'str', children),
+                'metros': [tag.text for tag in row.find('metros')],
+                'tags': [tag.text for tag in row.find('tags')],
+                'gallery': [get_value('href', 'str', tag.attrib) for tag in row.find('gallery')],
+                'phones': get_list(row.find('phones'), {'phone': 'str'}, {'type': 'str'}),
+                'work_times': get_list(row.find('work_times'), {'work_time': 'str'}, {'type': 'str'}),
+            }
+            places.append(place)
+        return places

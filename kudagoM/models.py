@@ -100,13 +100,11 @@ class Place(models.Model):
     longitude = models.FloatField(null=True, blank=True)
 
     type = models.ForeignKey('PlaceType', related_name='places')
-
     city = models.ForeignKey('City', related_name='places')
-    metros = models.ManyToManyField('Subway', related_name='places')
 
+    metros = models.ManyToManyField('Subway', related_name='places')
     tags = models.ManyToManyField('Tag', related_name='places')
     gallery = models.ManyToManyField('Image', related_name='places')
-
     phones = models.ManyToManyField('Phone', related_name='places')
     work_times = models.ManyToManyField('WorkTime', related_name='places')
 
@@ -139,7 +137,6 @@ class WorkTime(models.Model):
 
     def __unicode__(self):
         return '%s (%s)' % (self.time, self.type)
-
 
 
 
