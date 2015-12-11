@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
             name='EventPerson',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('event', models.ForeignKey(related_name='person_set', to='kudagoM.Event')),
+                ('event', models.ForeignKey(related_name='person_set', to='kudago_app.Event')),
             ],
         ),
         migrations.CreateModel(
@@ -85,31 +85,31 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='eventperson',
             name='person',
-            field=models.ForeignKey(related_name='event_set', to='kudagoM.Person'),
+            field=models.ForeignKey(related_name='event_set', to='kudago_app.Person'),
         ),
         migrations.AddField(
             model_name='eventperson',
             name='role',
-            field=models.ForeignKey(related_name='event_persons_set', to='kudagoM.Role'),
+            field=models.ForeignKey(related_name='event_persons_set', to='kudago_app.Role'),
         ),
         migrations.AddField(
             model_name='event',
             name='gallery',
-            field=models.ManyToManyField(related_name='events', to='kudagoM.Image'),
+            field=models.ManyToManyField(related_name='events', to='kudago_app.Image'),
         ),
         migrations.AddField(
             model_name='event',
             name='persons',
-            field=models.ManyToManyField(related_name='events', through='kudagoM.EventPerson', to='kudagoM.Person'),
+            field=models.ManyToManyField(related_name='events', through='kudago_app.EventPerson', to='kudago_app.Person'),
         ),
         migrations.AddField(
             model_name='event',
             name='tags',
-            field=models.ManyToManyField(related_name='events', to='kudagoM.Tag'),
+            field=models.ManyToManyField(related_name='events', to='kudago_app.Tag'),
         ),
         migrations.AddField(
             model_name='event',
             name='type',
-            field=models.ForeignKey(related_name='events', to='kudagoM.EventType'),
+            field=models.ForeignKey(related_name='events', to='kudago_app.EventType'),
         ),
     ]

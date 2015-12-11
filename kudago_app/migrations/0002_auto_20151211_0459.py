@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kudagoM', '0001_initial'),
+        ('kudago_app', '0001_initial'),
     ]
 
     operations = [
@@ -36,8 +36,8 @@ class Migration(migrations.Migration):
                 ('url', models.URLField(null=True, blank=True)),
                 ('latitude', models.FloatField(null=True, blank=True)),
                 ('longitude', models.FloatField(null=True, blank=True)),
-                ('city', models.ForeignKey(related_name='places', to='kudagoM.City')),
-                ('gallery', models.ManyToManyField(related_name='places', to='kudagoM.Image')),
+                ('city', models.ForeignKey(related_name='places', to='kudago_app.City')),
+                ('gallery', models.ManyToManyField(related_name='places', to='kudago_app.Image')),
             ],
         ),
         migrations.CreateModel(
@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=100)),
-                ('city', models.ForeignKey(related_name='metros', to='kudagoM.City')),
+                ('city', models.ForeignKey(related_name='metros', to='kudago_app.City')),
             ],
         ),
         migrations.CreateModel(
@@ -81,31 +81,31 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='worktime',
             name='type',
-            field=models.ForeignKey(related_name='work_time', to='kudagoM.WorkTimeType'),
+            field=models.ForeignKey(related_name='work_time', to='kudago_app.WorkTimeType'),
         ),
         migrations.AddField(
             model_name='place',
             name='metros',
-            field=models.ManyToManyField(related_name='places', to='kudagoM.Subway'),
+            field=models.ManyToManyField(related_name='places', to='kudago_app.Subway'),
         ),
         migrations.AddField(
             model_name='place',
             name='phones',
-            field=models.ManyToManyField(related_name='places', to='kudagoM.Phone'),
+            field=models.ManyToManyField(related_name='places', to='kudago_app.Phone'),
         ),
         migrations.AddField(
             model_name='place',
             name='tags',
-            field=models.ManyToManyField(related_name='places', to='kudagoM.Tag'),
+            field=models.ManyToManyField(related_name='places', to='kudago_app.Tag'),
         ),
         migrations.AddField(
             model_name='place',
             name='type',
-            field=models.ForeignKey(related_name='places', to='kudagoM.PlaceType'),
+            field=models.ForeignKey(related_name='places', to='kudago_app.PlaceType'),
         ),
         migrations.AddField(
             model_name='place',
             name='work_times',
-            field=models.ManyToManyField(related_name='places', to='kudagoM.WorkTime'),
+            field=models.ManyToManyField(related_name='places', to='kudago_app.WorkTime'),
         ),
     ]

@@ -25,6 +25,8 @@ class Command(BaseCommand):
         parser.add_argument('--events', nargs='*', help='list of events to be updated')
         parser.add_argument('--places', nargs='*', help='list of places to be updated')
 
+        parser.add_argument('-c', '--clean', action='store_true', help='Run only parser')
+
     def handle(self, *args, **options):
         try:
             # TODO чота треш какой-то. Переделать бы
@@ -36,9 +38,9 @@ class Command(BaseCommand):
 
             logger.info('Parse data.')
             parser = parser_class(options['source'])
+            data = parser.data
             logger.info('Parse data. Done.')
 
-            data = parser.data
             events_list, places_list = None, None
 
             if options['events']:
@@ -59,7 +61,8 @@ class Command(BaseCommand):
                 except TypeError:
                     pass
 
-            Mapper(data)
+            if not options['clean']:
+                Mapper(data)
 
         except (ImportError, AttributeError):
             print 'Make sure that you are using the correct parser'

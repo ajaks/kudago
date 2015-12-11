@@ -4,26 +4,32 @@ import xml.etree.ElementTree as eT
 from base import *
 
 
-def get_attr(value, value_type, data):
+def get_attr(key, output_type, data):
     if data is not None:
-        return get_value(value, value_type, data.attrib)
-
+        return get_value(key, output_type, data.attrib)
     return None
 
 
-def get_list(from_dict, fields, attributes=None):
-    if from_dict is not None:
+def get_dict(key, output_type, data, attribute=None):
+    if attribute:
+        return [get_attr(attribute, output_type, item) for item in data.find(key)]
+    return [get_value(item.text, output_type) for item in data.find(key)]
+
+
+def get_list(fields, data, attributes=None):
+    if data is not None:
         _r = []
-        for item in from_dict:
+        for item in data:
             result = {}
             for key in fields:
                 value = item.find(key)
-
+                # ЧОЗАНАХУЙ ТУТ ТВОРИТСЯ?
                 if value is None:
                     value = item
 
                 result[key] = get_value(value.text, fields[key])
-                if attributes:
+
+                if attributes is not None:
                     for attribute in attributes:
                         result[attribute] = get_attr(attribute, attributes[attribute], value)
 
@@ -44,16 +50,16 @@ class XmlFeedParser(BaseParser):
         }
 
     def get_events(self):
-        def prepare_age_restricted(data):
+        def clear_age(data):
             age = get_value('age_restricted', 'str', data)
             if age:
                 return int(age.strip('+'))
 
             return None
-
         events = []
         for row in self.raw_data['events']:
             children = {child.tag: child.text for child in row}
+            # logger.info(get_list({'name': 'str', 'role': 'str'}, row.find('persons')))
             event = {
                 'external_id': get_value('id', 'int', row.attrib),
                 'type': get_value('type', 'str', row.attrib),
@@ -63,12 +69,13 @@ class XmlFeedParser(BaseParser):
                 'text': get_value('text', 'str', children),
                 'description': get_value('description', 'str', children),
                 'stage_theatre': get_value('stage_theatre', 'str', children),
-                'age_restricted': prepare_age_restricted(children),
+                'age_restricted': clear_age(children),
                 'run_time': get_value('runtime', 'int', children),
-                'tags': [tag.text for tag in row.find('tags')],
-                'gallery': [get_value('href', 'str', tag.attrib) for tag in row.find('gallery')],
-                'persons': get_list(row.find('persons'), {'name': 'str', 'role': 'str'}),
+                'tags': get_dict('tags', 'str', row),
+                'gallery': get_dict('gallery', 'str', row, 'href'),
+                'persons': get_list({'name': 'str', 'role': 'str'}, row.find('persons')),
             }
+
             events.append(event)
         return events
 
@@ -86,11 +93,11 @@ class XmlFeedParser(BaseParser):
                 'longitude': get_attr('longitude', 'float', row.find('coordinates')),
                 'type': get_value('type', 'str', row.attrib),
                 'city': get_value('city', 'str', children),
-                'metros': [tag.text for tag in row.find('metros')],
-                'tags': [tag.text for tag in row.find('tags')],
-                'gallery': [get_value('href', 'str', tag.attrib) for tag in row.find('gallery')],
-                'phones': get_list(row.find('phones'), {'phone': 'str'}, {'type': 'str'}),
-                'work_times': get_list(row.find('work_times'), {'work_time': 'str'}, {'type': 'str'}),
+                'metros': get_dict('metros', 'str', row),
+                'tags': get_dict('tags', 'str', row),
+                'gallery': get_dict('gallery', 'str', row, 'href'),
+                'phones': get_list({'phone': 'str'}, row.find('phones'), {'type': 'str'}),
+                'work_times': get_list({'work_time': 'str'}, row.find('work_times'), attributes={'type': 'str'}),
             }
             places.append(place)
         return places

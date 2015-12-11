@@ -1,5 +1,5 @@
 # coding=utf-8
-from kudagoM.models import *
+from kudago_app.models import *
 import logging
 
 logger = logging.getLogger('importer')

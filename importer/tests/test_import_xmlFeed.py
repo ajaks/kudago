@@ -4,7 +4,7 @@ import os
 from django.test import TestCase
 from django.core.management import call_command
 
-from kudagoM.models import *
+from kudago_app.models import *
 
 
 class CommandTestCase(TestCase):

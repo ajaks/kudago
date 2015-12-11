@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kudagoM', '0002_auto_20151211_0459'),
+        ('kudago_app', '0002_auto_20151211_0459'),
     ]
 
     operations = [
@@ -20,8 +20,8 @@ class Migration(migrations.Migration):
                 ('date', models.DateField()),
                 ('time', models.TimeField()),
                 ('time_till', models.TimeField(blank=True, null=True)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='schedule', to='kudagoM.Event')),
-                ('place', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='schedule', to='kudagoM.Place')),
+                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='schedule', to='kudago_app.Event')),
+                ('place', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='schedule', to='kudago_app.Place')),
             ],
         ),
         migrations.DeleteModel(
