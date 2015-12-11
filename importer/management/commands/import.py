@@ -6,14 +6,13 @@ from django.core.management import BaseCommand
 
 from importer.mapper import Mapper
 
+logger = logging.getLogger('importer')
+
 
 def class_for_name(module_name, class_name):
     m = importlib.import_module(module_name)
     c = getattr(m, class_name)
     return c
-
-
-logger = logging.getLogger('importer')
 
 
 class Command(BaseCommand):
@@ -40,26 +39,28 @@ class Command(BaseCommand):
             logger.info('Parse data. Done.')
 
             data = parser.data
+            events_list, places_list = None, None
 
             if options['events']:
                 events_list = map(int, options['events'])
-                data['events'] = [x for x in data['events'] if x['external_id'] in events_list]
-                if len(events_list) is 1:
-                    data['schedule'] = []
-                    data['places'] = []
-                else:
-                    data['schedule'] = [x for x in data['schedule'] if x['event'] in events_list]
+                data['events'] = filter(lambda x: x['external_id'] in events_list, data['events'])
 
             if options['places']:
                 places_list = map(int, options['places'])
-                data['places'] = [x for x in data['places'] if x['external_id'] in places_list]
-                if len(places_list) is 1:
-                    data['schedule'] = []
-                    data['events'] = []
-                else:
-                    data['schedule'] = [x for x in data['schedule'] if x['place'] in places_list]
+                data['places'] = filter(lambda x: x['external_id'] in places_list, data['places'])
+
+            if events_list or places_list:
+                data['schedule'] = []
+                try:
+                    if len(events_list) is 1:
+                        data['places'] = []
+                    elif len(places_list) is 1:
+                        data['events'] = []
+                except TypeError:
+                    pass
 
             Mapper(data)
+
         except (ImportError, AttributeError):
             print 'Make sure that you are using the correct parser'
 

@@ -45,7 +45,7 @@ class CommandTestCase(TestCase):
 
         self.assertEqual(2, Event.objects.count())
         self.assertEqual(11, Place.objects.count())
-        self.assertEqual(3, Session.objects.count())
+        self.assertEqual(0, Session.objects.count())
 
     def test_handle_places_filter(self):
         self.assertEqual(0, Event.objects.count())
@@ -56,7 +56,7 @@ class CommandTestCase(TestCase):
 
         self.assertEqual(16, Event.objects.count())
         self.assertEqual(2, Place.objects.count())
-        self.assertEqual(111, Session.objects.count())
+        self.assertEqual(0, Session.objects.count())
 
     def test_handle_events_filter_one(self):
         self.assertEqual(0, Event.objects.count())
@@ -76,6 +76,6 @@ class CommandTestCase(TestCase):
 
         call_command('import', self.parser, self.source, places=[16767], verbosity=0)
 
-        self.assertEqual(0, Event.objects.count())
+        self.assertEqual(16, Event.objects.count())
         self.assertEqual(1, Place.objects.count())
         self.assertEqual(0, Session.objects.count())

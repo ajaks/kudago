@@ -13,7 +13,7 @@ def write_counters(title):
             output = func(self, counters)
             logger.info(
                 'Import %s. Done. Total: %s. Updated: %s. New: %s.' % (
-                title, output['r'], output['u'], output['r'] - output['u']))
+                    title, output['r'], output['u'], output['r'] - output['u']))
 
         return wrapper
 
