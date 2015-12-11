@@ -16,8 +16,8 @@ class XmlFeedParser(BaseParser):
         }
 
     def get_events(self):
-        def prepare_age_restricted(children):
-            age = get_value('age_restricted', 'str', children)
+        def prepare_age_restricted(data):
+            age = get_value('age_restricted', 'str', data)
             if age:
                 return int(age.strip('+'))
 
