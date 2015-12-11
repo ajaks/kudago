@@ -90,26 +90,26 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='person',
             name='role',
-            field=models.OneToOneField(to='importer.Role'),
+            field=models.OneToOneField(to='kudagoM.Role'),
         ),
         migrations.AddField(
             model_name='event',
             name='gallery',
-            field=models.ForeignKey(to='importer.EventImage'),
+            field=models.ForeignKey(to='kudagoM.EventImage'),
         ),
         migrations.AddField(
             model_name='event',
             name='persons',
-            field=models.ManyToManyField(related_name='events', to='importer.Person'),
+            field=models.ManyToManyField(related_name='events', to='kudagoM.Person'),
         ),
         migrations.AddField(
             model_name='event',
             name='tags',
-            field=models.ManyToManyField(related_name='events', to='importer.EventTag'),
+            field=models.ManyToManyField(related_name='events', to='kudagoM.EventTag'),
         ),
         migrations.AddField(
             model_name='event',
             name='type',
-            field=models.OneToOneField(to='importer.EventType'),
+            field=models.OneToOneField(to='kudagoM.EventType'),
         ),
     ]
