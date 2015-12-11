@@ -30,11 +30,12 @@ class Command(BaseCommand):
             class_name = _c[0].upper() + _c[1:]
 
             parser_class = class_for_name('importer.parsers.%s' % options['parser'], class_name)
-
             logger.info('Use %s with %s' % (options['parser'], options['source']))
-            parser = parser_class(options['source'])
 
-            logger.info('Mapper start')
+            logger.info('Parse data.')
+            parser = parser_class(options['source'])
+            logger.info('Parse data. Done')
+
             Mapper(parser.data)
         except (ImportError, AttributeError):
             print 'Make sure that you are using the correct parser'

@@ -66,6 +66,9 @@ class Event(models.Model):
     type = models.ForeignKey(EventType, related_name='events')
     gallery = models.ManyToManyField('Image', related_name='events')
 
+    def __unicode__(self):
+        return '%s - %s(%s)' % (self.external_id, self.title, self.type)
+
 
 class EventPerson(models.Model):
     event = models.ForeignKey('Event', related_name='person_set')
@@ -139,6 +142,12 @@ class WorkTime(models.Model):
         return '%s (%s)' % (self.time, self.type)
 
 
+# Schedule
 
-class Schedule(models.Model):
-    pass
+class Session(models.Model):
+    date = models.DateField()
+    time = models.TimeField()
+    time_till = models.TimeField(null=True, blank=True)
+
+    event = models.ForeignKey('Event', related_name='schedule')
+    place = models.ForeignKey('Place', related_name='schedule')

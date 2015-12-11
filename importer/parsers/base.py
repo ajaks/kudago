@@ -1,4 +1,8 @@
 # coding=utf-8
+from datetime import datetime
+
+import logging
+logger = logging.getLogger('importer')
 
 
 class Converter:
@@ -31,6 +35,13 @@ class Converter:
         elif value == 'false':
             return False
 
+    @staticmethod
+    def _date(value):
+        try:
+            return datetime.strptime(value, '%Y-%m-%d')
+        except ValueError:
+            return None
+
 
 def get_value(value, value_type, data=None):
     value_method = getattr(Converter, '_%s' % value_type)
@@ -59,6 +70,7 @@ class BaseParser:
         return {
             'events': self.get_events(),
             'places': self.get_places(),
+            'schedule': self.get_schedule(),
         }
 
     def get_events(self):

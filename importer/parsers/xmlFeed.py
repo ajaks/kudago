@@ -94,3 +94,16 @@ class XmlFeedParser(BaseParser):
             }
             places.append(place)
         return places
+
+    def get_schedule(self):
+        sessions = []
+        for row in self.raw_data['schedule']:
+            session = {
+                'date': get_attr('date', 'date', row),
+                'time': get_attr('time', 'str', row),
+                'time_till': get_attr('timetill', 'str', row),
+                'event': get_attr('event', 'int', row),
+                'place': get_attr('place', 'int', row),
+            }
+            sessions.append(session)
+        return sessions
