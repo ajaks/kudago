@@ -34,10 +34,10 @@ class Command(BaseCommand):
 
             logger.info('Parse data.')
             parser = parser_class(options['source'])
-            logger.info('Parse data. Done')
+            logger.info('Parse data. Done.')
 
             Mapper(parser.data)
         except (ImportError, AttributeError):
             print 'Make sure that you are using the correct parser'
 
-        logger.info('Done')
+        logger.info('Done.')

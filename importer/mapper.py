@@ -5,6 +5,19 @@ import logging
 logger = logging.getLogger('importer')
 
 
+def write_counters(title):
+    def decorator(func):
+        def wrapper(self):
+            counters = {'r': 0, 'u': 0, 'n': 0}
+            logger.info('Import %s.' % title)
+            output = func(self, counters)
+            logger.info(
+                'Import %s. Done. Total: %s. Updated: %s. New: %s.' % (title, output['r'], output['u'], output['r'] - output['u']))
+
+        return wrapper
+    return decorator
+
+
 class Mapper(object):
     def __init__(self, data):
         self.data = data
@@ -12,19 +25,6 @@ class Mapper(object):
         self.import_events()
         self.import_places()
         self.import_schedule()
-
-    def write_counters(title):
-        def decorator(func):
-            def inner(self):
-                counters = {'r': len(self.data[title.lower()]), 'u': 0, 'n': 0}
-                logger.info('Import %s[%s]:' % (title, counters['r']))
-
-                output = func(self, counters)
-                logger.info(
-                    'Import %s done. Totall: %s. Updated: %s. New: %s.' % (title, output['r'], output['u'], output['r'] - output['u']))
-
-            return inner
-        return decorator
 
     @write_counters('Events')
     def import_events(self, counters):
@@ -62,10 +62,12 @@ class Mapper(object):
                 role, _ = Role.objects.get_or_create(name=person_raw['role'])
                 event.person_set.create(person=person, role=role)
 
+        counters['r'] = len(self.data['events'])
         return counters
 
     @write_counters('Places')
     def import_places(self, counters):
+        counters['r'] = len(self.data['places'])
         for place_raw in self.data['places']:
             defaults = {
                 key: place_raw[key]
@@ -111,6 +113,7 @@ class Mapper(object):
                                                               defaults={'type': _type})
                 place.work_times.add(work_time)
 
+        counters['r'] = len(self.data['places'])
         return counters
 
     @write_counters('Schedule')
@@ -131,4 +134,5 @@ class Mapper(object):
                     setattr(session, k, v)
                 session.save()
 
+        counters['r'] = len(self.data['schedule'])
         return counters
