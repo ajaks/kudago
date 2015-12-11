@@ -12,9 +12,11 @@ def write_counters(title):
             logger.info('Import %s.' % title)
             output = func(self, counters)
             logger.info(
-                'Import %s. Done. Total: %s. Updated: %s. New: %s.' % (title, output['r'], output['u'], output['r'] - output['u']))
+                'Import %s. Done. Total: %s. Updated: %s. New: %s.' % (
+                title, output['r'], output['u'], output['r'] - output['u']))
 
         return wrapper
+
     return decorator
 
 
@@ -37,9 +39,9 @@ class Mapper(object):
 
             defaults['type'], _ = EventType.objects.get_or_create(slug=event_raw['type'] or 'other')
 
-            event, exist = Event.objects.get_or_create(external_id=event_raw['external_id'], defaults=defaults)
+            event, created = Event.objects.get_or_create(external_id=event_raw['external_id'], defaults=defaults)
 
-            if not exist:
+            if not created:
                 counters['u'] += 1
                 for k, v in defaults.items():
                     setattr(event, k, v)
@@ -77,9 +79,9 @@ class Mapper(object):
             defaults['type'], _ = PlaceType.objects.get_or_create(slug=place_raw['type'] or 'other')
             defaults['city'], _ = City.objects.get_or_create(name=place_raw['city'])
 
-            place, exist = Place.objects.get_or_create(external_id=place_raw['external_id'], defaults=defaults)
+            place, created = Place.objects.get_or_create(external_id=place_raw['external_id'], defaults=defaults)
 
-            if not exist:
+            if not created:
                 counters['u'] += 1
                 for k, v in defaults.items():
                     setattr(place, k, v)
@@ -129,20 +131,14 @@ class Mapper(object):
             return None
 
         for session_raw in self.data['schedule']:
-            defaults = {
-                key: session_raw[key]
-                for key in ['date', 'time', 'time_till']
-                }
-
             event = get_one(session_raw['event'], events)
             place = get_one(session_raw['place'], places)
-            session, exist = Session.objects.get_or_create(event=event, place=place, defaults=defaults)
 
-            if not exist:
-                counters['u'] += 1
-                for k, v in defaults.items():
-                    setattr(session, k, v)
-                session.save()
+            if not (event and place):
+                continue
+
+            Session.objects.create(date=session_raw['date'], time=session_raw['time'],
+                                   time_till=session_raw['time_till'], event=event, place=place)
 
         counters['r'] = len(self.data['schedule'])
         return counters

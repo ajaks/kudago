@@ -44,12 +44,20 @@ class Command(BaseCommand):
             if options['events']:
                 events_list = map(int, options['events'])
                 data['events'] = [x for x in data['events'] if x['external_id'] in events_list]
-                data['schedule'] = [x for x in data['schedule'] if x['event'] in events_list]
+                if len(events_list) is 1:
+                    data['schedule'] = []
+                    data['places'] = []
+                else:
+                    data['schedule'] = [x for x in data['schedule'] if x['event'] in events_list]
 
             if options['places']:
                 places_list = map(int, options['places'])
                 data['places'] = [x for x in data['places'] if x['external_id'] in places_list]
-                data['schedule'] = [x for x in data['schedule'] if x['place'] in places_list]
+                if len(places_list) is 1:
+                    data['schedule'] = []
+                    data['events'] = []
+                else:
+                    data['schedule'] = [x for x in data['schedule'] if x['place'] in places_list]
 
             Mapper(data)
         except (ImportError, AttributeError):
