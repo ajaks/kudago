@@ -34,6 +34,7 @@ class Converter:
             return True
         elif value == 'false':
             return False
+        return None
 
     @staticmethod
     def _date(value):

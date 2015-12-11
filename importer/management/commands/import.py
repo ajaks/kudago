@@ -26,10 +26,15 @@ class Command(BaseCommand):
         parser.add_argument('--places', nargs='*', help='list of places to be updated')
 
         parser.add_argument('-c', '--clean', action='store_true', help='Run only parser')
+        parser.add_argument('-s', '--silent', action='store_true', help='Silent mode')
 
     def handle(self, *args, **options):
         try:
             # TODO чота треш какой-то. Переделать бы
+
+            if options['silent']:
+                logging.disable(logging.CRITICAL)
+
             _c = '%sParser' % options['parser']
             class_name = _c[0].upper() + _c[1:]
 
@@ -68,3 +73,6 @@ class Command(BaseCommand):
             print 'Make sure that you are using the correct parser'
 
         logger.info('Done.')
+
+        if options['silent']:
+            logging.disable(logging.NOTSET)

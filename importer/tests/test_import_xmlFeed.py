@@ -30,7 +30,7 @@ class CommandTestCase(TestCase):
         self.assertEqual(0, Place.objects.count())
         self.assertEqual(0, Session.objects.count())
 
-        call_command('import', self.parser, self.source, verbosity=0)
+        call_command('import', self.parser, self.source, silent=True, verbosity=0)
 
         self.assertEqual(16, Event.objects.count())
         self.assertEqual(11, Place.objects.count())
@@ -41,7 +41,7 @@ class CommandTestCase(TestCase):
         self.assertEqual(0, Place.objects.count())
         self.assertEqual(0, Session.objects.count())
 
-        call_command('import', self.parser, self.source, events=[93492, 93822], verbosity=0)
+        call_command('import', self.parser, self.source, events=[93492, 93822], silent=True, verbosity=0)
 
         self.assertEqual(2, Event.objects.count())
         self.assertEqual(11, Place.objects.count())
@@ -52,7 +52,7 @@ class CommandTestCase(TestCase):
         self.assertEqual(0, Place.objects.count())
         self.assertEqual(0, Session.objects.count())
 
-        call_command('import', self.parser, self.source, places=[16767, 10777], verbosity=0)
+        call_command('import', self.parser, self.source, places=[16767, 10777], silent=True, verbosity=0)
 
         self.assertEqual(16, Event.objects.count())
         self.assertEqual(2, Place.objects.count())
@@ -63,7 +63,7 @@ class CommandTestCase(TestCase):
         self.assertEqual(0, Place.objects.count())
         self.assertEqual(0, Session.objects.count())
 
-        call_command('import', self.parser, self.source, events=[93822], verbosity=0)
+        call_command('import', self.parser, self.source, events=[93822], silent=True, verbosity=0)
 
         self.assertEqual(1, Event.objects.count())
         self.assertEqual(0, Place.objects.count())
@@ -74,7 +74,7 @@ class CommandTestCase(TestCase):
         self.assertEqual(0, Place.objects.count())
         self.assertEqual(0, Session.objects.count())
 
-        call_command('import', self.parser, self.source, places=[16767], verbosity=0)
+        call_command('import', self.parser, self.source, places=[16767], silent=True, verbosity=0)
 
         self.assertEqual(16, Event.objects.count())
         self.assertEqual(1, Place.objects.count())

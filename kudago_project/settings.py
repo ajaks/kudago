@@ -122,7 +122,7 @@ LOGGING = {
     'loggers': {
         'importer': {
             'handlers': ['management_console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
     },
 }
