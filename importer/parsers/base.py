@@ -41,34 +41,6 @@ def get_value(value, value_type, data=None):
         return None
 
 
-def get_attr(value, value_type, data):
-    if data is not None:
-        return get_value(value, value_type, data.attrib)
-
-    return None
-
-
-def get_list(from_dict, fields, attributes=None):
-    if from_dict is not None:
-        _r = []
-        for item in from_dict:
-            result = {}
-            for key in fields:
-                value = item.find(key)
-
-                if value is None:
-                    value = item
-
-                result[key] = get_value(value.text, fields[key])
-                if attributes:
-                    for attribute in attributes:
-                        result[attribute] = get_attr(attribute, attributes[attribute], value)
-
-            _r.append(result)
-        return _r
-    return []
-
-
 class BaseParser:
     def __init__(self, data):
         self.raw_data = self.prepare_source(data)
