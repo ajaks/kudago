@@ -16,19 +16,26 @@ class XmlFeedParser(BaseParser):
         }
 
     def get_events(self):
+        def prepare_age_restricted(children):
+            age = get_value('age_restricted', 'str', children)
+            if age:
+                return int(age.strip('+'))
+
+            return None
+
         events = []
-        for row in self._raw['events']:
+        for row in self.raw_data['events']:
             children = {child.tag: child.text for child in row}
             event = {
                 'external_id': get_value('id', 'int', row.attrib),
-                'type': get_value('type', 'int', row.attrib),
+                'type': get_value('type', 'str', row.attrib),
                 'price': get_value('price', 'bool', row.attrib),
                 'kids': get_value('kids', 'bool', row.attrib),
                 'title': get_value('title', 'str', children),
                 'text': get_value('text', 'str', children),
                 'description': get_value('description', 'str', children),
                 'stage_theatre': get_value('stage_theatre', 'str', children),
-                'age_restricted': get_value('age_restricted', 'str', children),
+                'age_restricted': prepare_age_restricted(children),
                 'run_time': get_value('runtime', 'int', children),
                 'tags': [tag.text for tag in row.find('tags')],
                 'gallery': [get_value('href', 'str', tag.attrib) for tag in row.find('gallery')],

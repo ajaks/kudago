@@ -55,10 +55,17 @@ def get_list(from_dict, fields):
 
 class BaseParser:
     def __init__(self, data):
-        self._raw = self.prepare_source(data)
+        self.raw_data = self.prepare_source(data)
+        self.clear_data = None
 
     def prepare_source(self, data):
         raise NotImplemented
+
+    @property
+    def data(self):
+        if not self.clear_data:
+            self.clear_data = self.parse()
+        return self.clear_data
 
     def parse(self):
         return {
@@ -68,10 +75,10 @@ class BaseParser:
         }
 
     def get_events(self):
-        return self._raw['events']
+        return self.raw_data['events']
 
     def get_places(self):
-        return self._raw['places']
+        return self.raw_data['places']
 
     def get_schedule(self):
-        return self._raw['schedule']
+        return self.raw_data['schedule']

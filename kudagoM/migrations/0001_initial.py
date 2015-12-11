@@ -16,40 +16,21 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('external_id', models.IntegerField()),
                 ('title', models.CharField(max_length=100)),
-                ('text', models.TextField()),
-                ('description', models.TextField()),
-                ('stage_theatre', models.CharField(max_length=100)),
+                ('text', models.TextField(null=True, blank=True)),
+                ('description', models.TextField(null=True, blank=True)),
+                ('stage_theatre', models.CharField(max_length=100, null=True, blank=True)),
                 ('price', models.NullBooleanField()),
                 ('kids', models.NullBooleanField()),
-                ('age_restricted', models.SmallIntegerField()),
-                ('run_time', models.SmallIntegerField()),
+                ('age_restricted', models.SmallIntegerField(null=True, blank=True)),
+                ('run_time', models.SmallIntegerField(null=True, blank=True)),
             ],
-        ),
-        migrations.CreateModel(
-            name='EventImage',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('url', models.URLField()),
-            ],
-            options={
-                'abstract': False,
-            },
         ),
         migrations.CreateModel(
             name='EventPerson',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('event', models.ForeignKey(related_name='person_set', to='kudagoM.Event')),
             ],
-        ),
-        migrations.CreateModel(
-            name='EventTag',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=140)),
-            ],
-            options={
-                'abstract': False,
-            },
         ),
         migrations.CreateModel(
             name='EventType',
@@ -60,6 +41,13 @@ class Migration(migrations.Migration):
             options={
                 'abstract': False,
             },
+        ),
+        migrations.CreateModel(
+            name='Image',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('url', models.URLField()),
+            ],
         ),
         migrations.CreateModel(
             name='Person',
@@ -87,29 +75,41 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
             ],
         ),
+        migrations.CreateModel(
+            name='Tag',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=140)),
+            ],
+        ),
         migrations.AddField(
-            model_name='person',
+            model_name='eventperson',
+            name='person',
+            field=models.ForeignKey(related_name='event_set', to='kudagoM.Person'),
+        ),
+        migrations.AddField(
+            model_name='eventperson',
             name='role',
-            field=models.OneToOneField(to='kudagoM.Role'),
+            field=models.ForeignKey(related_name='event_persons_set', to='kudagoM.Role'),
         ),
         migrations.AddField(
             model_name='event',
             name='gallery',
-            field=models.ForeignKey(to='kudagoM.EventImage'),
+            field=models.ManyToManyField(related_name='events', to='kudagoM.Image'),
         ),
         migrations.AddField(
             model_name='event',
             name='persons',
-            field=models.ManyToManyField(related_name='events', to='kudagoM.Person'),
+            field=models.ManyToManyField(related_name='events', through='kudagoM.EventPerson', to='kudagoM.Person'),
         ),
         migrations.AddField(
             model_name='event',
             name='tags',
-            field=models.ManyToManyField(related_name='events', to='kudagoM.EventTag'),
+            field=models.ManyToManyField(related_name='events', to='kudagoM.Tag'),
         ),
         migrations.AddField(
             model_name='event',
             name='type',
-            field=models.OneToOneField(to='kudagoM.EventType'),
+            field=models.ForeignKey(related_name='events', to='kudagoM.EventType'),
         ),
     ]
