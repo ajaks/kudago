@@ -1,3 +1,4 @@
+# coding=utf-8
 from django.db import models
 
 
@@ -67,7 +68,7 @@ class Event(models.Model):
     gallery = models.ManyToManyField('Image', related_name='events')
 
     def __unicode__(self):
-        return '%s - %s(%s)' % (self.external_id, self.title, self.type)
+        return u'%s(%s)' % (self.title, self.type)
 
 
 class EventPerson(models.Model):
@@ -76,7 +77,7 @@ class EventPerson(models.Model):
     role = models.ForeignKey('Role', related_name='event_persons_set')
 
     def __unicode__(self):
-        return '%s - %s(%s)' % (self.event, self.person, self.role)
+        return u'%s - %s(%s)' % (self.event, self.person, self.role)
 
 
 # Places
@@ -111,6 +112,9 @@ class Place(models.Model):
     phones = models.ManyToManyField('Phone', related_name='places')
     work_times = models.ManyToManyField('WorkTime', related_name='places')
 
+    def __unicode__(self):
+        return u'%s(%s)' % (self.title, self.type)
+
 
 class City(models.Model):
     name = models.CharField(max_length=100)
@@ -124,7 +128,7 @@ class Subway(models.Model):
     city = models.ForeignKey('City', related_name='metros')
 
     def __unicode__(self):
-        return '%s(%s)' % (self.name, self.city)
+        return u'%s(%s)' % (self.name, self.city)
 
 
 class Phone(models.Model):
@@ -139,7 +143,7 @@ class WorkTime(models.Model):
     type = models.ForeignKey('WorkTimeType', related_name='work_time')
 
     def __unicode__(self):
-        return '%s (%s)' % (self.time, self.type)
+        return u'%s (%s)' % (self.time, self.type)
 
 
 # Schedule
@@ -151,3 +155,6 @@ class Session(models.Model):
 
     event = models.ForeignKey('Event', related_name='schedule')
     place = models.ForeignKey('Place', related_name='schedule')
+
+    def __unicode__(self):
+        return u'%s@%s %s[%s]' % (self.event, self.place, self.date, self.time)

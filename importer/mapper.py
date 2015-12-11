@@ -118,14 +118,24 @@ class Mapper(object):
 
     @write_counters('Schedule')
     def import_schedule(self, counters):
+        events = Event.objects.all()
+        places = Place.objects.all()
+
+        def get_one(field, objects):
+            item = [x for x in objects if x.external_id == field]
+            if len(item):
+                return item[0]
+
+            return None
+
         for session_raw in self.data['schedule']:
             defaults = {
                 key: session_raw[key]
                 for key in ['date', 'time', 'time_till']
                 }
 
-            event = Event.objects.get(external_id=session_raw['event'])
-            place = Place.objects.get(external_id=session_raw['place'])
+            event = get_one(session_raw['event'], events)
+            place = get_one(session_raw['place'], places)
             session, exist = Session.objects.get_or_create(event=event, place=place, defaults=defaults)
 
             if not exist:
