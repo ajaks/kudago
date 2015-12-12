@@ -23,7 +23,6 @@ def get_list(fields, data, attributes=None):
             result = {}
             for key in fields:
                 value = item.find(key)
-                # ЧОЗАНАХУЙ ТУТ ТВОРИТСЯ?
                 if value is None:
                     value = item
 
@@ -41,15 +40,19 @@ def get_list(fields, data, attributes=None):
 class XmlFeedParser(BaseParser):
     def prepare_source(self, data):
         parser = eT.XMLParser(encoding="utf-8")
-        tree = eT.parse(data, parser=parser)
-        root = tree.getroot()
+        try:
+            tree = eT.parse(data, parser=parser)
+            root = tree.getroot()
+        except IOError:
+            root = eT.fromstring(data, parser=parser)
+
         return {
             'events': root[0],
             'places': root[1],
             'schedule': root[2]
         }
 
-    def get_events(self):
+    def parse_events(self):
         def clear_age(data):
             age = get_value('age_restricted', 'str', data)
             if age:
@@ -57,9 +60,8 @@ class XmlFeedParser(BaseParser):
 
             return None
         events = []
-        for row in self.raw_data['events']:
+        for row in self.get_events():
             children = {child.tag: child.text for child in row}
-            # logger.info(get_list({'name': 'str', 'role': 'str'}, row.find('persons')))
             event = {
                 'external_id': get_value('id', 'int', row.attrib),
                 'type': get_value('type', 'str', row.attrib),
@@ -79,9 +81,9 @@ class XmlFeedParser(BaseParser):
             events.append(event)
         return events
 
-    def get_places(self):
+    def parse_places(self):
         places = []
-        for row in self.raw_data['places']:
+        for row in self.get_places():
             children = {child.tag: child.text for child in row}
             place = {
                 'external_id': get_value('id', 'int', row.attrib),
@@ -102,9 +104,9 @@ class XmlFeedParser(BaseParser):
             places.append(place)
         return places
 
-    def get_schedule(self):
+    def parse_schedule(self):
         sessions = []
-        for row in self.raw_data['schedule']:
+        for row in self.get_schedule():
             session = {
                 'date': get_attr('date', 'date', row),
                 'time': get_attr('time', 'str', row),

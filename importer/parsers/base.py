@@ -11,7 +11,7 @@ class Converter:
 
     @staticmethod
     def _str(value):
-        return u'%s' % value
+        return '%s' % value
 
     @staticmethod
     def _int(value):
@@ -69,10 +69,19 @@ class BaseParser:
 
     def parse(self):
         return {
-            'events': self.get_events(),
-            'places': self.get_places(),
-            'schedule': self.get_schedule(),
+            'events': self.parse_events(),
+            'places': self.parse_places(),
+            'schedule': self.parse_schedule(),
         }
+
+    def parse_events(self):
+        return []
+
+    def parse_places(self):
+        return []
+
+    def parse_schedule(self):
+        return []
 
     def get_events(self):
         return self.raw_data['events']
