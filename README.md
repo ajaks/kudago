@@ -1,8 +1,11 @@
 Тестовое задание для KudaGo
 
 usage:
+
 `python manage.py import xmlFeed ./importer/tests/test.xml`
+
 `python manage.py import xmlFeed ./importer/tests/test.xml --events 93492 93822  --places 16767 10777`
+
 `python manage.py import xmlFeed ./importer/tests/test.xml --events 93492 93822  --places 16767 10777 -c -s`
 
 где:
